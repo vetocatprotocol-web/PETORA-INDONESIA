@@ -7,13 +7,17 @@ import Redis from "ioredis"
 import { Pool } from "pg"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { schema } from "@petora/db"
+import * as OTPAuth from "otpauth"
 import {
   authenticateWithPassword,
+  beginTotpEnrollment,
+  confirmTotpEnrollment,
   createLoginRateLimiter,
   createSession,
   findSession,
   hashPassword,
-  revokeSession
+  revokeSession,
+  verifyUserTotp
 } from "./index"
 
 const databaseUrl = process.env.DATABASE_URL
@@ -132,6 +136,66 @@ describe("auth credentials and sessions", () => {
     } finally {
       const storedKeys = await redis.keys(`${keyPrefix}*`)
       if (storedKeys.length > 0) await redis.del(...storedKeys)
+    }
+  })
+
+  it("stores TOTP secrets encrypted and enables them only after a valid code", async () => {
+    const userId = randomUUID()
+    const email = `totp-${userId}@example.test`
+    const key = Buffer.alloc(32, 7)
+    await db
+      .insert(schema.users)
+      .values({ id: userId, realm: "staff", email, name: "TOTP Integration" })
+
+    try {
+      const enrollment = await beginTotpEnrollment(db, { userId, realm: "staff" }, key)
+      const [storedUser] = await db
+        .select({
+          twoFactorSecretEnc: schema.users.twoFactorSecretEnc,
+          twoFactorEnabled: schema.users.twoFactorEnabled
+        })
+        .from(schema.users)
+        .where(eq(schema.users.id, userId))
+        .limit(1)
+
+      expect(enrollment.uri).toContain("otpauth://totp/")
+      expect(storedUser?.twoFactorSecretEnc).toMatch(/^v1\./)
+      expect(storedUser?.twoFactorSecretEnc).not.toContain(enrollment.uri)
+      await expect(
+        confirmTotpEnrollment(db, { userId, realm: "staff", token: "000000" }, key)
+      ).resolves.toBe(false)
+
+      const totp = OTPAuth.URI.parse(enrollment.uri)
+      await expect(
+        confirmTotpEnrollment(db, { userId, realm: "staff", token: totp.generate() }, key)
+      ).resolves.toBe(true)
+      await expect(
+        confirmTotpEnrollment(db, { userId, realm: "staff", token: totp.generate() }, key)
+      ).resolves.toBe(false)
+      await expect(
+        verifyUserTotp(db, { userId, realm: "staff", token: totp.generate() }, key)
+      ).resolves.toBe(false)
+      const nextStepTimestamp = Date.now() + 30_000
+      const nextStepCode = totp.generate({ timestamp: nextStepTimestamp })
+      await expect(
+        verifyUserTotp(db, { userId, realm: "staff", token: nextStepCode }, key, nextStepTimestamp)
+      ).resolves.toBe(true)
+      await expect(
+        verifyUserTotp(db, { userId, realm: "staff", token: nextStepCode }, key, nextStepTimestamp)
+      ).resolves.toBe(false)
+      await expect(
+        verifyUserTotp(db, { userId, realm: "customer", token: totp.generate() }, key)
+      ).resolves.toBe(false)
+
+      const [enabledUser] = await db
+        .select({ twoFactorEnabled: schema.users.twoFactorEnabled })
+        .from(schema.users)
+        .where(eq(schema.users.id, userId))
+        .limit(1)
+      expect(enabledUser?.twoFactorEnabled).toBe(true)
+    } finally {
+      await db.delete(schema.sessions).where(eq(schema.sessions.userId, userId))
+      await db.delete(schema.users).where(eq(schema.users.id, userId))
     }
   })
 })

@@ -8,5 +8,15 @@ export type {
   LoginRateLimitResult,
   RateLimitRule
 } from "./rate-limit"
+export {
+  createTotpEnrollment,
+  beginTotpEnrollment,
+  confirmTotpEnrollment,
+  decryptTotpSecret,
+  encryptTotpSecret,
+  verifyTotpToken,
+  verifyUserTotp
+} from "./two-factor"
+export type { TotpEnrollment } from "./two-factor"
 export { createSession, findSession, revokeSession } from "./sessions"
 export type { CreateSessionInput, SessionIdentity } from "./sessions"

@@ -65,6 +65,7 @@ export const users = pgTable(
     phoneVerified: boolean("phone_verified").default(false).notNull(),
     twoFactorEnabled: boolean("two_factor_enabled").default(false).notNull(),
     twoFactorSecretEnc: text("two_factor_secret_enc"),
+    twoFactorLastUsedStep: bigint("two_factor_last_used_step", { mode: "number" }),
     ...timestamps(),
     ...softDelete()
   },

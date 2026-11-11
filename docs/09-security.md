@@ -24,7 +24,7 @@
 - Audit log untuk aksi sensitif: login, perubahan role/permission, perubahan integrasi, diskon di atas batas, void/refund, akses rekam medis, ekspor data.
 
 ## Status Implementasi Auth
-Fondasi Fase 2 menyediakan hashing Argon2id, verifikasi password yang membatasi realm dan hanya menerima user aktif, sesi opaque dengan token acak 256-bit yang hanya disimpan sebagai SHA-256, serta limiter Redis per identitas/IP dengan key tersamarkan. Sesi memeriksa realm, status user, expiry, dan revocation. Limiter belum terhubung ke route login; cookie aman dan TOTP 2FA juga belum tersedia. Jangan membuka layanan login sebelum seluruh kontrol tersebut terintegrasi.
+Fondasi Fase 2 menyediakan hashing Argon2id, verifikasi password per realm, sesi opaque yang hanya disimpan sebagai SHA-256, limiter Redis per identitas/IP, login staff/customer, cookie HttpOnly, dan TOTP. Secret TOTP dienkripsi AES-256-GCM dengan AAD terikat ke ID user serta counter step mencegah replay. Secret aplikasi dibuat pada init dan dibaca web dari volume read-only. UI login/enrollment, audit event autentikasi, seed permission, dan Setup Wizard masih belum tersedia.
 
 ## Role Kritis
 `integration.config.manage`, `user.manage`, `settings.manage` hanya Owner/Super Admin.

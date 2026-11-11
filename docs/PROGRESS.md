@@ -33,13 +33,16 @@ Checklist per fase dan per modul. Tandai `[x]` saat gerbang keluar fase terpenuh
 	- [x] Hash/verifikasi password Argon2id dan credential verification per realm
 	- [x] Sesi opaque tersimpan sebagai hash, realm-scoped, dengan expiry dan revocation
 	- [x] Redis rate limit per identitas dan IP dengan key tersamarkan dan reset identitas saat sukses
-	- [ ] Login API/cookie untuk kedua realm dan TOTP 2FA
+	- [x] Enrollment TOTP terenkripsi, login API/cookie kedua realm, enforcement TOTP dan proteksi replay
+	- [ ] Integrasi UI enrollment, rate-limit operational tuning, dan audit event autentikasi
 - [ ] RBAC penuh: katalog permission, role kustom, penugasan per cabang, batas numerik, approval, UI matriks, "lihat sebagai"
 - [ ] Multi-cabang, pengaturan, branding + atribusi terkunci, penomoran dokumen, feature flags, audit log
 - [ ] Kerangka integrasi: registry adapter, form konfigurasi dinamis, enkripsi kredensial, uji koneksi, webhook ingest + idempotensi
 - [ ] Adapter WhatsApp (Cloud API + gateway) dan Resend, mesin notifikasi + antrian worker + template
 - [ ] Storage file, mesin dokumen/PDF
-- [ ] Setup Wizard, otomatisasi rahasia/migrasi/seed di Docker
+- [ ] Setup Wizard dan seed katalog permission di Docker
+	- [x] Pembuatan AUTH_SECRET dan ENCRYPTION_MASTER_KEY persisten saat init
+	- [x] Migrasi otomatis sebelum web/worker dimulai
 **Gerbang keluar Fase 2:** instalasi bersih → wizard → owner membuat role kustom, cabang, mengonfigurasi WhatsApp dan email dari UI, mengirim pesan uji; test RBAC dan scoping cabang hijau.
 
 ## Fase 3 — Data Induk

@@ -13,4 +13,4 @@ COPY --link packages/rbac/package.json ./packages/rbac/package.json
 COPY --link packages/ui/package.json ./packages/ui/package.json
 RUN npm ci --workspaces --include-workspace-root
 COPY --link . .
-CMD ["npm", "run", "db:migrate", "--workspace", "@petora/db"]
+CMD ["npm", "run", "db:init", "--workspace", "@petora/db"]

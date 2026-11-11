@@ -23,12 +23,26 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.web
+    volumes:
+      - petora_secrets:/run/secrets:ro
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://petora:petora@postgres:5432/petora
       - REDIS_URL=redis://redis:6379
       - AUTH_SECRET=${AUTH_SECRET}
       - ENCRYPTION_MASTER_KEY=${ENCRYPTION_MASTER_KEY}
+      - AUTH_LOGIN_IDENTIFIER_ATTEMPTS=${AUTH_LOGIN_IDENTIFIER_ATTEMPTS:-5}
+      - AUTH_LOGIN_IDENTIFIER_WINDOW_SECONDS=${AUTH_LOGIN_IDENTIFIER_WINDOW_SECONDS:-900}
+      - AUTH_LOGIN_IDENTIFIER_BLOCK_SECONDS=${AUTH_LOGIN_IDENTIFIER_BLOCK_SECONDS:-900}
+      - AUTH_LOGIN_IP_ATTEMPTS=${AUTH_LOGIN_IP_ATTEMPTS:-30}
+      - AUTH_LOGIN_IP_WINDOW_SECONDS=${AUTH_LOGIN_IP_WINDOW_SECONDS:-900}
+      - AUTH_LOGIN_IP_BLOCK_SECONDS=${AUTH_LOGIN_IP_BLOCK_SECONDS:-900}
+      - AUTH_TOTP_IDENTIFIER_ATTEMPTS=${AUTH_TOTP_IDENTIFIER_ATTEMPTS:-5}
+      - AUTH_TOTP_IDENTIFIER_WINDOW_SECONDS=${AUTH_TOTP_IDENTIFIER_WINDOW_SECONDS:-300}
+      - AUTH_TOTP_IDENTIFIER_BLOCK_SECONDS=${AUTH_TOTP_IDENTIFIER_BLOCK_SECONDS:-900}
+      - AUTH_TOTP_IP_ATTEMPTS=${AUTH_TOTP_IP_ATTEMPTS:-20}
+      - AUTH_TOTP_IP_WINDOW_SECONDS=${AUTH_TOTP_IP_WINDOW_SECONDS:-300}
+      - AUTH_TOTP_IP_BLOCK_SECONDS=${AUTH_TOTP_IP_BLOCK_SECONDS:-900}
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,6 +67,8 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile.worker
+    volumes:
+      - petora_secrets:/run/secrets:ro
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://petora:petora@postgres:5432/petora
@@ -110,6 +126,9 @@ services:
     environment:
       - DATABASE_URL=postgresql://petora:petora@postgres:5432/petora
       - REDIS_URL=redis://redis:6379
+      - PETORA_SECRETS_DIR=/run/secrets
+    volumes:
+      - petora_secrets:/run/secrets
     depends_on:
       postgres:
         condition: service_healthy
@@ -122,3 +141,4 @@ volumes:
   redis_data:
   caddy_data:
   caddy_config:
+  petora_secrets:

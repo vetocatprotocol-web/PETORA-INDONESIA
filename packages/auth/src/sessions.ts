@@ -79,7 +79,8 @@ export async function findSession(
       realm: schema.users.realm,
       name: schema.users.name,
       email: schema.users.email,
-      phone: schema.users.phone
+      phone: schema.users.phone,
+      twoFactorEnabled: schema.users.twoFactorEnabled
     })
     .from(schema.sessions)
     .innerJoin(schema.users, eq(schema.sessions.userId, schema.users.id))

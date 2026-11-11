@@ -20,7 +20,7 @@ export type PasswordCredentials = {
 
 export type AuthenticatedUser = Pick<
   typeof schema.users.$inferSelect,
-  "id" | "realm" | "name" | "email" | "phone"
+  "id" | "realm" | "name" | "email" | "phone" | "twoFactorEnabled"
 >
 
 type Database = ReturnType<typeof createDb>
@@ -65,6 +65,7 @@ export async function authenticateWithPassword(
       name: schema.users.name,
       email: schema.users.email,
       phone: schema.users.phone,
+      twoFactorEnabled: schema.users.twoFactorEnabled,
       passwordHash: schema.users.passwordHash
     })
     .from(schema.users)
@@ -90,6 +91,7 @@ export async function authenticateWithPassword(
     realm: user.realm,
     name: user.name,
     email: user.email,
-    phone: user.phone
+    phone: user.phone,
+    twoFactorEnabled: user.twoFactorEnabled
   }
 }
