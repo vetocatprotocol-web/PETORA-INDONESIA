@@ -1,21 +1,167 @@
-MIT License
+PETORA INDONESIA SOURCE-AVAILABLE LICENSE
+Versi 1.0 — 11 November 2026
 
-Copyright (c) 2026 vetocatprotocol-web
+Hak Cipta (c) 2026 PETORA INDONESIA.
+Seluruh hak cipta dilindungi undang-undang.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+PEMBERITAHUAN PENTING:
+Teks lisensi ini adalah dokumen hukum yang mengatur penggunaan, modifikasi, dan
+distribusi perangkat lunak PETORA INDONESIA. Anda WAJIB meninjau teks ini bersama
+penasihat hukum yang berwenang sebelum melakukan distribusi komersial,
+sub-lisensi, atau penggunaan di lingkungan produksi.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+═══════════════════════════════════════════════════════════════════════════════
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. DEFINISI
+
+   1.1 "Perangkat Lunak" berarti seluruh kode sumber, dokumentasi, aset, dan
+       konfigurasi yang didistribusikan sebagai bagian dari PETORA INDONESIA.
+   1.2 "Atribusi PETORA" berarti teks "Powered by PETORA INDONESIA" beserta
+       pemberitahuan hak cipta yang menyertainya.
+   1.3 "Pengguna" berarti individu atau entitas yang menerima salinan Perangkat
+       Lunak berdasarkan lisensi ini.
+   1.4 "White-labeling" berarti penggantian nama, logo, warna, atau identitas
+       visual aplikasi menjadi merek milik Pengguna.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+2. HAK CIPTA
+
+   2.1 Hak cipta atas inti Perangkat Lunak (termasuk namun tidak terbatas pada
+       arsitektur, logika bisnis, dan kode sumber asli) TETAP menjadi milik
+       mutlak PETORA INDONESIA.
+   2.2 Lisensi ini TIDAK memindahkan kepemilikan hak cipta kepada Pengguna.
+   2.3 Modifikasi atau karya turunan yang dibuat Pengguna atas Perangkat Lunak
+       tetap tunduk pada ketentuan lisensi ini.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+3. IZIN YANG DIBERIKAN
+
+   Dengan tunduk pada syarat dan ketentuan dalam lisensi ini, PETORA INDONESIA
+   memberikan izin kepada Pengguna untuk:
+
+   3.1 Menggunakan Perangkat Lunak untuk tujuan apa pun, termasuk komersial.
+   3.2 Memodifikasi kode sumber sesuai kebutuhan operasional Pengguna.
+   3.3 Mendistribusikan salinan Perangkat Lunak (asli maupun termodifikasi)
+       kepada pihak ketiga, dengan syarat pihak penerima terikat pada lisensi
+       yang sama.
+   3.4 Melakukan White-labeling, yaitu mengganti nama aplikasi, logo, favicon,
+       dan warna aksen dengan merek milik Pengguna sendiri.
+   3.5 Menjalankan Perangkat Lunak pada infrastruktur sendiri (self-hosted)
+       tanpa batasan jumlah instalasi atau cabang.
+   3.6 Menggunakan Perangkat Lunak TANPA memerlukan license key, aktivasi
+       online, atau verifikasi ke server PETORA INDONESIA.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+4. SYARAT WAJIB (NON-NEGOTIABLE)
+
+   Izin pada Bagian 3 diberikan DENGAN SYARAT bahwa Pengguna MEMATUHI
+   seluruh ketentuan berikut:
+
+   4.1 ATRIBUSI WAJIB
+       (a) Atribusi PETORA ("Powered by PETORA INDONESIA" dan pemberitahuan
+           hak cipta) WAJIB SELALU ditampilkan pada:
+           - Panel staf (admin) aplikasi.
+           - Portal pelanggan (PWA/web).
+           - Seluruh dokumen cetak yang dihasilkan sistem (struk, invoice,
+             sertifikat vaksin, surat sehat, laporan, dan sejenisnya).
+           - Footer UI di setiap halaman aplikasi.
+       (b) Atribusi PETORA TIDAK BOLEH:
+           - Disembunyikan, dihapus, atau diganti.
+           - Ditempatkan di balik saklar (toggle), konfigurasi, atau
+             pengaturan apa pun yang memungkinkannya dimatikan.
+           - Dipindahkan ke halaman terpisah yang tidak terlihat oleh
+             pengguna akhir atau penerima dokumen.
+       (c) White-labeling (Bagian 3.4) diizinkan HANYA untuk elemen visual
+           seperti nama aplikasi, logo, dan warna aksen. Atribusi PETORA
+           tetap harus tampil di samping merek Pengguna.
+
+   4.2 PELESTARIAN PEMBERITAHUAN
+       (a) Setiap salinan atau modifikasi Perangkat Lunak yang didistribusikan
+           WAJIB menyertakan:
+           - Salinan utuh file LICENSE ini.
+           - Pemberitahuan hak cipta asli PETORA INDONESIA.
+       (b) Jika Perangkat Lunak didistribusikan dalam bentuk biner/compiled,
+           pemberitahuan harus disertakan dalam dokumentasi dan/atau materi
+           lain yang menyertainya.
+
+   4.3 TRANSMISI KEWAJIBAN
+       Setiap distribusi kepada pihak ketiga (termasuk klien, anak perusahaan,
+       atau penerima lisensi turunan) WAJIB mengikat pihak penerima pada
+       seluruh ketentuan lisensi ini.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+5. LARANGAN
+
+   5.1 Pengguna TIDAK DIPERBOLEHKAN:
+       (a) Menghapus, menonaktifkan, atau menyembunyikan Atribusi PETORA
+           melalui mekanisme apa pun (termasuk CSS, konfigurasi, atau fork).
+       (b) Mengklaim bahwa Pengguna adalah pencipta asli atau pemilik hak
+           cipta inti Perangkat Lunak.
+       (c) Mendaftarkan merek dagang, paten, atau hak kekayaan intelektual
+           lain yang mencakup inti Perangkat Lunak atas nama Pengguna.
+       (d) Membuat versi Perangkat Lunak yang bersaing (competing product)
+           dengan menghapus Atribusi PETORA.
+       (e) Membebankan biaya lisensi atas inti Perangkat Lunak kepada pihak
+           ketiga tanpa menyertakan kewajiban lisensi yang sama.
+
+   5.2 Pelanggaran terhadap Bagian 4 atau 5.1 secara otomatis membatalkan
+       seluruh izin yang diberikan dalam lisensi ini dan dapat menimbulkan
+       tuntutan hukum.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+6. TIDAK ADA JAMINAN
+
+   PERANGKAT LUNAK INI DIBERIKAN "SEBAGAIMANA ADANYA" (AS IS) TANPA JAMINAN
+   APA PUN, BAIK TERSURAT MAUPUN TERSIRAT, TERMASUK NAMUN TIDAK TERBATAS PADA
+   JAMINAN KELAYAKAN JUAL (MERCHANTABILITY), KESESUAIAN UNTUK TUJUAN TERTENTU
+   (FITNESS FOR A PARTICULAR PURPOSE), DAN KETIDAKADAAN PELANGGARAN.
+
+   PETORA INDONESIA TIDAK MENJAMIN bahwa Perangkat Lunak akan bebas dari
+   kesalahan, aman, atau tersedia tanpa gangguan.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+7. BATASAN TANGGUNG JAWAB
+
+   DALAM KEADAAN APA PUN, KECUALI DIWAJIBKAN OLEH HUKUM YANG BERLAKU,
+   PETORA INDONESIA TIDAK BERTANGGUNG JAWAB ATAS KLAIM, KERUGIAN, ATAU
+   KEWAJIBAN LAINNYA YANG TIMBUL DARI PENGGUNAAN ATAU KETIDAKMAMPUAN
+   MENGGUNAKAN PERANGKAT LUNAK INI, TERMASUK NAMUN TIDAK TERBATAS PADA
+   KERUGIAN LANGSUNG, TIDAK LANGSUNG, INSIDENTAL, KHUSUS, KONSEKUENSIAL,
+   ATAU HUKUMAN, MESKIPUN PETORA INDONESIA TELAH DIPERINGATKAN TENTANG
+   KEMUNGKINAN KERUGIAN TERSEBUT.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+8. KEPATUHAN HUKUM
+
+   8.1 Pengguna bertanggung jawab penuh atas kepatuhan terhadap hukum dan
+       peraturan yang berlaku di wilayah operasionalnya, termasuk namun tidak
+       terbatas pada:
+       - Undang-Undang Perlindungan Data Pribadi (UU PDP Indonesia).
+       - Regulasi perpajakan dan akuntansi.
+       - Regulasi praktik kedokteran hewan dan farmasi.
+       - Regulasi transaksi elektronik.
+   8.2 PETORA INDONESIA tidak bertanggung jawab atas pelanggaran hukum yang
+       dilakukan Pengguna dalam penggunaan Perangkat Lunak.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+9. PENUTUP
+
+   Dengan mengunduh, menginstal, menyalin, atau menggunakan Perangkat Lunak
+   ini, Pengguna menyatakan telah membaca, memahami, dan menyetujui seluruh
+   ketentuan dalam lisensi ini.
+
+   Untuk pertanyaan, klarifikasi, atau permintaan lisensi tambahan di luar
+   ketentuan ini, silakan menghubungi PETORA INDONESIA melalui saluran resmi.
+
+   — PETORA INDONESIA —
+   "Solusi Operasional Terpadu untuk Petshop & Klinik Hewan Indonesia"
+
+═══════════════════════════════════════════════════════════════════════════════
