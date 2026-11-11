@@ -4,6 +4,7 @@
     "composite": true,
     "jsx": "preserve",
     "jsxImportSource": "react",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "allowJs": true,
     "esModuleInterop": true,
     "plugins": [
@@ -12,16 +13,6 @@
       }
     ]
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "dist",
-    "build"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", ".next", "dist", "build"]
 }

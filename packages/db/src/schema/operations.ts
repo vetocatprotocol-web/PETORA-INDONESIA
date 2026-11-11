@@ -2,8 +2,17 @@
  * Skema Drizzle — domain Operasional Lanjutan & Penjadwalan (AGENT.md 13, docs/03-erd.md).
  * Fase 7: rawat inap, bedah, grooming, penitipan, kalender/janji temu, SDM dasar.
  */
-import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core"
-import { id, timestamps, softDelete, rupiah } from "./helpers"
+import {
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid
+} from "drizzle-orm/pg-core"
+import { id, timestamps, rupiah } from "./helpers"
 import { organization, branches, users } from "./core"
 import { customers, pets, roomsCages, services, productVariants } from "./master"
 import { medicalRecords, consents, visits } from "./clinical"
@@ -13,8 +22,12 @@ export const availabilityRules = pgTable(
   "availability_rules",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     staffId: uuid("staff_id").references(() => users.id),
     resourceId: uuid("resource_id"),
     /** [{day:0..6, start:"09:00", end:"17:00"}] */
@@ -29,8 +42,12 @@ export const timeOff = pgTable(
   "time_off",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    staffId: uuid("staff_id").notNull().references(() => users.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    staffId: uuid("staff_id")
+      .notNull()
+      .references(() => users.id),
     kind: text("kind", { enum: ["cuti", "izin", "sakit", "dinas_luar"] }).notNull(),
     startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
@@ -45,8 +62,12 @@ export const appointments = pgTable(
   "appointments",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     number: text("number").notNull(),
     customerId: uuid("customer_id").references(() => customers.id),
     petId: uuid("pet_id").references(() => pets.id),
@@ -55,9 +76,15 @@ export const appointments = pgTable(
     resourceId: uuid("resource_id"),
     startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
-    status: text("status", { enum: ["pending", "confirmed", "checked_in", "completed", "cancelled", "no_show"] }).default("pending").notNull(),
+    status: text("status", {
+      enum: ["pending", "confirmed", "checked_in", "completed", "cancelled", "no_show"]
+    })
+      .default("pending")
+      .notNull(),
     depositAmount: rupiah("deposit_amount").default(0).notNull(),
-    source: text("source", { enum: ["staff", "portal", "whatsapp"] }).default("staff").notNull(),
+    source: text("source", { enum: ["staff", "portal", "whatsapp"] })
+      .default("staff")
+      .notNull(),
     notes: text("notes"),
     createdBy: uuid("created_by").references(() => users.id),
     ...timestamps()
@@ -75,13 +102,19 @@ export const waitlistEntries = pgTable(
   "waitlist_entries",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     serviceId: uuid("service_id").references(() => services.id),
     customerId: uuid("customer_id").references(() => customers.id),
     petId: uuid("pet_id").references(() => pets.id),
     desiredFrom: timestamp("desired_from", { withTimezone: true }).notNull(),
-    status: text("status", { enum: ["waiting", "offered", "converted", "cancelled"] }).default("waiting").notNull(),
+    status: text("status", { enum: ["waiting", "offered", "converted", "cancelled"] })
+      .default("waiting")
+      .notNull(),
     ...timestamps()
   },
   (t) => [index("wl_branch_status_idx").on(t.branchId, t.status)]
@@ -92,14 +125,24 @@ export const groomingJobs = pgTable(
   "grooming_jobs",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     appointmentId: uuid("appointment_id").references(() => appointments.id),
     visitId: uuid("visit_id").references(() => visits.id),
-    petId: uuid("pet_id").notNull().references(() => pets.id),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id),
     groomerId: uuid("groomer_id").references(() => users.id),
     packageServiceId: uuid("package_service_id").references(() => services.id),
-    stage: text("stage", { enum: ["queued", "bathing", "drying", "cutting", "finishing", "done", "cancelled"] }).default("queued").notNull(),
+    stage: text("stage", {
+      enum: ["queued", "bathing", "drying", "cutting", "finishing", "done", "cancelled"]
+    })
+      .default("queued")
+      .notNull(),
     beforePhotoFileIds: jsonb("before_photo_file_ids").$type<string[]>().default([]).notNull(),
     afterPhotoFileIds: jsonb("after_photo_file_ids").$type<string[]>().default([]).notNull(),
     notes: text("notes"),
@@ -116,17 +159,25 @@ export const boardingReservations = pgTable(
   "boarding_reservations",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     number: text("number").notNull(),
-    petId: uuid("pet_id").notNull().references(() => pets.id),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id),
     customerId: uuid("customer_id").references(() => customers.id),
     cageId: uuid("cage_id").references(() => roomsCages.id),
     checkInAt: timestamp("check_in_at", { withTimezone: true }),
     plannedOutAt: timestamp("planned_out_at", { withTimezone: true }).notNull(),
     checkOutAt: timestamp("check_out_at", { withTimezone: true }),
     dailyRate: rupiah("daily_rate").notNull(),
-    status: text("status", { enum: ["reserved", "checked_in", "checked_out", "cancelled"] }).default("reserved").notNull(),
+    status: text("status", { enum: ["reserved", "checked_in", "checked_out", "cancelled"] })
+      .default("reserved")
+      .notNull(),
     feedingInstructions: text("feeding_instructions"),
     medicationNotes: text("medication_notes"),
     invoiceId: uuid("invoice_id"),
@@ -145,7 +196,9 @@ export const boardingDailyLogs = pgTable(
   "boarding_daily_logs",
   {
     id: id(),
-    reservationId: uuid("reservation_id").notNull().references(() => boardingReservations.id, { onDelete: "cascade" }),
+    reservationId: uuid("reservation_id")
+      .notNull()
+      .references(() => boardingReservations.id, { onDelete: "cascade" }),
     logDate: text("log_date").notNull(),
     appetite: text("appetite", { enum: ["baik", "sedang", "buruk", "tidak_makan"] }),
     activity: text("activity", { enum: ["aktif", "normal", "lesu"] }),
@@ -165,16 +218,26 @@ export const admissions = pgTable(
   "admissions",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
-    visitId: uuid("visit_id").notNull().references(() => visits.id),
-    petId: uuid("pet_id").notNull().references(() => pets.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
+    visitId: uuid("visit_id")
+      .notNull()
+      .references(() => visits.id),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id),
     roomCageId: uuid("room_cage_id").references(() => roomsCages.id),
     admittingVetId: uuid("admitting_vet_id").references(() => users.id),
     diagnosisSummary: text("diagnosis_summary").notNull(),
     admittedAt: timestamp("admitted_at", { withTimezone: true }).defaultNow().notNull(),
     dischargedAt: timestamp("discharged_at", { withTimezone: true }),
-    status: text("status", { enum: ["active", "discharged", "transferred", "deceased"] }).default("active").notNull(),
+    status: text("status", { enum: ["active", "discharged", "transferred", "deceased"] })
+      .default("active")
+      .notNull(),
     dailyChargeInvoiceId: uuid("daily_charge_invoice_id"),
     ...timestamps()
   },
@@ -185,7 +248,9 @@ export const observations = pgTable(
   "observations",
   {
     id: id(),
-    admissionId: uuid("admission_id").notNull().references(() => admissions.id, { onDelete: "cascade" }),
+    admissionId: uuid("admission_id")
+      .notNull()
+      .references(() => admissions.id, { onDelete: "cascade" }),
     observedAt: timestamp("observed_at", { withTimezone: true }).defaultNow().notNull(),
     vitals: jsonb("vitals").$type<{ hr?: number; rr?: number; tempC10?: number; spo2?: number }>(),
     note: text("note").notNull(),
@@ -200,7 +265,9 @@ export const medicationSchedules = pgTable(
   "medication_schedules",
   {
     id: id(),
-    admissionId: uuid("admission_id").notNull().references(() => admissions.id, { onDelete: "cascade" }),
+    admissionId: uuid("admission_id")
+      .notNull()
+      .references(() => admissions.id, { onDelete: "cascade" }),
     variantId: uuid("variant_id").references(() => productVariants.id),
     drugName: text("drug_name").notNull(),
     dosageText: text("dosage_text").notNull(),
@@ -220,10 +287,16 @@ export const surgeries = pgTable(
   "surgeries",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     recordId: uuid("record_id").references(() => medicalRecords.id),
-    petId: uuid("pet_id").notNull().references(() => pets.id),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id),
     procedureName: text("procedure_name").notNull(),
     surgeonId: uuid("surgeon_id").references(() => users.id),
     assistantIds: jsonb("assistant_ids").$type<string[]>().default([]).notNull(),
@@ -234,11 +307,18 @@ export const surgeries = pgTable(
     anesthesiaNote: text("anesthesia_note"),
     intraOpNote: text("intra_op_note"),
     postOpNote: text("post_op_note"),
-    status: text("status", { enum: ["planned", "consented", "in_progress", "completed", "cancelled"] }).default("planned").notNull(),
+    status: text("status", {
+      enum: ["planned", "consented", "in_progress", "completed", "cancelled"]
+    })
+      .default("planned")
+      .notNull(),
     invoiceId: uuid("invoice_id"),
     ...timestamps()
   },
-  (t) => [index("surg_branch_sched_idx").on(t.branchId, t.scheduledAt), index("surg_status_idx").on(t.status)]
+  (t) => [
+    index("surg_branch_sched_idx").on(t.branchId, t.scheduledAt),
+    index("surg_status_idx").on(t.status)
+  ]
 )
 
 /** Jadwal kerja staf (shift HR) + absensi. */
@@ -246,16 +326,25 @@ export const workSchedules = pgTable(
   "work_schedules",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
-    staffId: uuid("staff_id").notNull().references(() => users.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
+    staffId: uuid("staff_id")
+      .notNull()
+      .references(() => users.id),
     workDate: text("work_date").notNull(),
     startTime: text("start_time").notNull(),
     endTime: text("end_time").notNull(),
     roleOnShift: text("role_on_shift"),
     ...timestamps()
   },
-  (t) => [uniqueIndex("ws_staff_date_idx").on(t.staffId, t.workDate), index("ws_branch_date_idx").on(t.branchId, t.workDate)]
+  (t) => [
+    uniqueIndex("ws_staff_date_idx").on(t.staffId, t.workDate),
+    index("ws_branch_date_idx").on(t.branchId, t.workDate)
+  ]
 )
 
 export const attendance = pgTable(
@@ -263,11 +352,15 @@ export const attendance = pgTable(
   {
     id: id(),
     scheduleId: uuid("schedule_id").references(() => workSchedules.id),
-    staffId: uuid("staff_id").notNull().references(() => users.id),
+    staffId: uuid("staff_id")
+      .notNull()
+      .references(() => users.id),
     workDate: text("work_date").notNull(),
     clockInAt: timestamp("clock_in_at", { withTimezone: true }),
     clockOutAt: timestamp("clock_out_at", { withTimezone: true }),
-    status: text("status", { enum: ["present", "late", "absent", "sick", "leave"] }).default("present").notNull(),
+    status: text("status", { enum: ["present", "late", "absent", "sick", "leave"] })
+      .default("present")
+      .notNull(),
     ...timestamps()
   },
   (t) => [uniqueIndex("att_staff_date_idx").on(t.staffId, t.workDate)]

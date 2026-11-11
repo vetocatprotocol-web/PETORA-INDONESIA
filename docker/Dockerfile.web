@@ -5,7 +5,16 @@ WORKDIR /app
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci
+COPY apps/web/package.json ./apps/web/package.json
+COPY apps/worker/package.json ./apps/worker/package.json
+COPY packages/auth/package.json ./packages/auth/package.json
+COPY packages/core/package.json ./packages/core/package.json
+COPY packages/db/package.json ./packages/db/package.json
+COPY packages/documents/package.json ./packages/documents/package.json
+COPY packages/integrations/package.json ./packages/integrations/package.json
+COPY packages/rbac/package.json ./packages/rbac/package.json
+COPY packages/ui/package.json ./packages/ui/package.json
+RUN npm ci --workspaces --include-workspace-root
 
 FROM base AS builder
 WORKDIR /app

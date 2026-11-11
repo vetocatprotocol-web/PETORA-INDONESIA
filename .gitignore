@@ -115,6 +115,8 @@ yarn.lock
 generated/
 .prisma/
 drizzle/
+!packages/db/drizzle/
+!packages/db/drizzle/**
 
 # Local development
 .local/

@@ -10,9 +10,11 @@
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "lint": "turbo run lint",
+    "format": "prettier --write \"apps/**/*.{js,ts,tsx,json,css}\" \"packages/**/*.{js,ts,tsx,json,css}\" \"docker/**/*.{yaml,yml}\" \"*.{json,js,mjs,ts}\" \".github/workflows/*.{yml,yaml}\"",
+    "format:check": "prettier --check \"apps/**/*.{js,ts,tsx,json,css}\" \"packages/**/*.{js,ts,tsx,json,css}\" \"docker/**/*.{yaml,yml}\" \"*.{json,js,mjs,ts}\" \".github/workflows/*.{yml,yaml}\"",
     "typecheck": "turbo run typecheck",
     "test": "vitest run",
-    "test:integration": "vitest run --config vitest.integration.ts 2>/dev/null || echo \"integration tests require Postgres (later phase)\"",
+    "test:integration": "vitest run --config vitest.integration.ts",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
     "db:seed": "turbo run db:seed"

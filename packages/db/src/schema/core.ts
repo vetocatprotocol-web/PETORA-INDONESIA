@@ -4,7 +4,18 @@
  * Aturan AGENT.md: uang = bigint Rupiah; soft delete untuk master; indeks jalur kueri utama;
  * FK sebagai pertahanan kedua.
  */
-import { index, jsonb, pgTable, text, timestamp, uniqueIndex, uuid, integer, boolean, bigint } from "drizzle-orm/pg-core"
+import {
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  integer,
+  boolean,
+  bigint
+} from "drizzle-orm/pg-core"
 import { id, timestamps, softDelete, activeFlag } from "./helpers"
 
 export const organization = pgTable("organization", {
@@ -33,7 +44,10 @@ export const branches = pgTable(
     ...timestamps(),
     ...softDelete()
   },
-  (t) => [uniqueIndex("branches_org_code_idx").on(t.organizationId, t.code), index("branches_deleted_idx").on(t.deletedAt)]
+  (t) => [
+    uniqueIndex("branches_org_code_idx").on(t.organizationId, t.code),
+    index("branches_deleted_idx").on(t.deletedAt)
+  ]
 )
 
 export const users = pgTable(
@@ -111,7 +125,9 @@ export const roles = pgTable(
     /** Role bawaan sistem: dapat diubah/diklon tapi Owner tidak dapat dihapus/dikurangi. */
     isSystem: boolean("is_system").default(false).notNull(),
     isOwner: boolean("is_owner").default(false).notNull(),
-    defaultScope: text("default_scope", { enum: ["all_branches", "assigned_branches", "self_only"] })
+    defaultScope: text("default_scope", {
+      enum: ["all_branches", "assigned_branches", "self_only"]
+    })
       .default("assigned_branches")
       .notNull(),
     /** Batas numerik per role (docs/04): diskon %, diskon Rp, refund Rp, void Rp, tunai Rp. Null = tanpa batas. */
@@ -122,17 +138,14 @@ export const roles = pgTable(
   (t) => [uniqueIndex("roles_org_key_idx").on(t.organizationId, t.key)]
 )
 
-export const permissions = pgTable(
-  "permissions",
-  {
-    key: text("key").primaryKey(),
-    module: text("module").notNull(),
-    descriptionId: text("description_id").notNull(),
-    descriptionEn: text("description_en").notNull(),
-    risk: text("risk", { enum: ["rendah", "sedang", "tinggi", "kritis"] }).notNull(),
-    ...timestamps()
-  }
-)
+export const permissions = pgTable("permissions", {
+  key: text("key").primaryKey(),
+  module: text("module").notNull(),
+  descriptionId: text("description_id").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  risk: text("risk", { enum: ["rendah", "sedang", "tinggi", "kritis"] }).notNull(),
+  ...timestamps()
+})
 
 export const rolePermissions = pgTable(
   "role_permissions",
@@ -219,7 +232,11 @@ export const auditLogs = pgTable(
     ip: text("ip"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
   },
-  (t) => [index("audit_actor_idx").on(t.actorId), index("audit_entity_idx").on(t.entityType, t.entityId), index("audit_created_idx").on(t.createdAt)]
+  (t) => [
+    index("audit_actor_idx").on(t.actorId),
+    index("audit_entity_idx").on(t.entityType, t.entityId),
+    index("audit_created_idx").on(t.createdAt)
+  ]
 )
 
 export const settings = pgTable(
@@ -270,22 +287,19 @@ export const documentSequences = pgTable(
   (t) => [uniqueIndex("docseq_unique_idx").on(t.organizationId, t.branchId, t.docType, t.period)]
 )
 
-export const files = pgTable(
-  "files",
-  {
-    id: id(),
-    organizationId: uuid("organization_id")
-      .notNull()
-      .references(() => organization.id),
-    storageKey: text("storage_key").notNull().unique(),
-    originalName: text("original_name").notNull(),
-    contentType: text("content_type").notNull(),
-    sizeBytes: integer("size_bytes").notNull(),
-    checksumSha256: text("checksum_sha256"),
-    uploadedBy: uuid("uploaded_by").references(() => users.id),
-    ...timestamps()
-  }
-)
+export const files = pgTable("files", {
+  id: id(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organization.id),
+  storageKey: text("storage_key").notNull().unique(),
+  originalName: text("original_name").notNull(),
+  contentType: text("content_type").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  checksumSha256: text("checksum_sha256"),
+  uploadedBy: uuid("uploaded_by").references(() => users.id),
+  ...timestamps()
+})
 
 /** OTP WhatsApp/email untuk portal & pemulihan. */
 export const otpCodes = pgTable(

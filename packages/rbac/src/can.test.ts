@@ -1,6 +1,13 @@
 import { describe, it, expect } from "vitest"
 import { PERMISSION_CATALOG, isPermissionKey, listModules } from "./permissions"
-import { can, accessibleBranchIds, effectiveLimits, checkAmountLimit, checkDiscountLimit, type Actor } from "./can"
+import {
+  can,
+  accessibleBranchIds,
+  effectiveLimits,
+  checkAmountLimit,
+  checkDiscountLimit,
+  type Actor
+} from "./can"
 import { BUILTIN_ROLES, resolveBuiltinPermissions } from "./builtin-roles"
 
 function staff(overrides?: Partial<Actor>): Actor {
@@ -40,21 +47,36 @@ describe("can()", () => {
   })
   const owner: Actor = staff({
     userId: "owner1",
-    grants: [{ roleId: "owner", scope: "all_branches", branchIds: [], permissions: resolveBuiltinPermissions("owner") }]
+    grants: [
+      {
+        roleId: "owner",
+        scope: "all_branches",
+        branchIds: [],
+        permissions: resolveBuiltinPermissions("owner")
+      }
+    ]
   })
 
   it("denies unknown permission even to owner", () => {
     expect(can({ actor: owner, permission: "not.a.permission" })).toBe(false)
   })
   it("grants owner everything everywhere", () => {
-    expect(can({ actor: owner, permission: "settings.manage", resource: { branchId: BR_B } })).toBe(true)
+    expect(can({ actor: owner, permission: "settings.manage", resource: { branchId: BR_B } })).toBe(
+      true
+    )
   })
   it("scopes cashier to assigned branch only", () => {
-    expect(can({ actor: cashier, permission: "pos.sale.create", resource: { branchId: BR_A } })).toBe(true)
-    expect(can({ actor: cashier, permission: "pos.sale.create", resource: { branchId: BR_B } })).toBe(false)
+    expect(
+      can({ actor: cashier, permission: "pos.sale.create", resource: { branchId: BR_A } })
+    ).toBe(true)
+    expect(
+      can({ actor: cashier, permission: "pos.sale.create", resource: { branchId: BR_B } })
+    ).toBe(false)
   })
   it("denies cashier high-risk actions", () => {
-    expect(can({ actor: cashier, permission: "pos.sale.void", resource: { branchId: BR_A } })).toBe(false)
+    expect(can({ actor: cashier, permission: "pos.sale.void", resource: { branchId: BR_A } })).toBe(
+      false
+    )
     expect(can({ actor: cashier, permission: "integration.config.manage" })).toBe(false)
   })
   it("override deny beats role grant; override grant fills gap", () => {
@@ -62,35 +84,70 @@ describe("can()", () => {
       grants: cashier.grants,
       overrides: [{ permission: "pos.sale.create", effect: "deny" }]
     })
-    expect(can({ actor: denied, permission: "pos.sale.create", resource: { branchId: BR_A } })).toBe(false)
+    expect(
+      can({ actor: denied, permission: "pos.sale.create", resource: { branchId: BR_A } })
+    ).toBe(false)
 
     const granted: Actor = staff({
       grants: cashier.grants,
       overrides: [{ permission: "pos.sale.void", effect: "grant" }]
     })
-    expect(can({ actor: granted, permission: "pos.sale.void", resource: { branchId: BR_B } })).toBe(true)
+    expect(can({ actor: granted, permission: "pos.sale.void", resource: { branchId: BR_B } })).toBe(
+      true
+    )
   })
   it("self_only requires matching ownerId", () => {
     const self: Actor = staff({
       grants: [{ roleId: "r", scope: "self_only", branchIds: [], permissions: ["audit.log.view"] }]
     })
-    expect(can({ actor: self, permission: "audit.log.view", resource: { ownerId: "u1" } })).toBe(true)
-    expect(can({ actor: self, permission: "audit.log.view", resource: { ownerId: "other" } })).toBe(false)
+    expect(can({ actor: self, permission: "audit.log.view", resource: { ownerId: "u1" } })).toBe(
+      true
+    )
+    expect(can({ actor: self, permission: "audit.log.view", resource: { ownerId: "other" } })).toBe(
+      false
+    )
     expect(can({ actor: self, permission: "audit.log.view" })).toBe(false)
   })
 })
 
 describe("accessibleBranchIds()", () => {
   it("null = all branches for all_branches scope", () => {
-    const actor: Actor = staff({ grants: [{ roleId: "finance", scope: "all_branches", branchIds: [], permissions: ["finance.report.view"] }] })
+    const actor: Actor = staff({
+      grants: [
+        {
+          roleId: "finance",
+          scope: "all_branches",
+          branchIds: [],
+          permissions: ["finance.report.view"]
+        }
+      ]
+    })
     expect(accessibleBranchIds(actor, "finance.report.view")).toBeNull()
   })
   it("returns assigned branches for scoped role", () => {
-    const actor: Actor = staff({ grants: [{ roleId: "cashier", scope: "assigned_branches", branchIds: [BR_A], permissions: ["pos.sale.create"] }] })
+    const actor: Actor = staff({
+      grants: [
+        {
+          roleId: "cashier",
+          scope: "assigned_branches",
+          branchIds: [BR_A],
+          permissions: ["pos.sale.create"]
+        }
+      ]
+    })
     expect(accessibleBranchIds(actor, "pos.sale.create")).toEqual([BR_A])
   })
   it("empty when permission not held", () => {
-    const actor: Actor = staff({ grants: [{ roleId: "cashier", scope: "assigned_branches", branchIds: [BR_A], permissions: ["pos.sale.create"] }] })
+    const actor: Actor = staff({
+      grants: [
+        {
+          roleId: "cashier",
+          scope: "assigned_branches",
+          branchIds: [BR_A],
+          permissions: ["pos.sale.create"]
+        }
+      ]
+    })
     expect(accessibleBranchIds(actor, "medical.record.edit")).toEqual([])
   })
 })
@@ -151,7 +208,15 @@ describe("builtin roles", () => {
   })
   it("covers all documented modules", () => {
     const modules = new Set(listModules())
-    for (const m of ["pos", "inventory", "medical", "operations", "master", "finance", "platform"]) {
+    for (const m of [
+      "pos",
+      "inventory",
+      "medical",
+      "operations",
+      "master",
+      "finance",
+      "platform"
+    ]) {
       expect(modules.has(m)).toBe(true)
     }
   })

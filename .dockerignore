@@ -3,6 +3,8 @@ node_modules
 dist
 build
 drizzle
+!packages/db/drizzle/
+!packages/db/drizzle/**
 .git
 backups
 .env

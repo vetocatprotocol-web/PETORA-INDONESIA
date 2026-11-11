@@ -2,7 +2,17 @@
  * Skema Drizzle — domain Integrasi & Notifikasi (AGENT.md 13).
  * Kredensial disimpan terenkripsi (ENCRYPTION_MASTER_KEY) — jangan pernah mengirim rahasia ke browser atau log.
  */
-import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid
+} from "drizzle-orm/pg-core"
 import { id, timestamps, softDelete } from "./helpers"
 import { organization, branches, users } from "./core"
 
@@ -21,7 +31,9 @@ export const integrationConnections = pgTable(
     config: jsonb("config").$type<Record<string, unknown>>().default({}).notNull(),
     /** Kredensial terenkripsi (payload envelope, bukan plaintext). */
     credentialsEnc: text("credentials_enc"),
-    environment: text("environment", { enum: ["sandbox", "production"] }).default("sandbox").notNull(),
+    environment: text("environment", { enum: ["sandbox", "production"] })
+      .default("sandbox")
+      .notNull(),
     isActive: boolean("is_active").default(false).notNull(),
     lastTestAt: timestamp("last_test_at", { withTimezone: true }),
     lastTestOk: boolean("last_test_ok"),
@@ -63,12 +75,17 @@ export const webhookEvents = pgTable(
     payload: jsonb("payload").notNull(),
     receivedAt: timestamp("received_at", { withTimezone: true }).defaultNow().notNull(),
     processedAt: timestamp("processed_at", { withTimezone: true }),
-    status: text("status", { enum: ["received", "processing", "done", "failed", "ignored_duplicate"] })
+    status: text("status", {
+      enum: ["received", "processing", "done", "failed", "ignored_duplicate"]
+    })
       .default("received")
       .notNull(),
     error: text("error")
   },
-  (t) => [index("we_connection_status_idx").on(t.connectionId, t.status), index("we_provider_idx").on(t.providerEventId)]
+  (t) => [
+    index("we_connection_status_idx").on(t.connectionId, t.status),
+    index("we_provider_idx").on(t.providerEventId)
+  ]
 )
 
 export const messageTemplates = pgTable(
@@ -106,7 +123,9 @@ export const notificationRules = pgTable(
     quietHours: jsonb("quiet_hours"),
     ...timestamps()
   },
-  (t) => [uniqueIndex("nr_event_channel_idx").on(t.organizationId, t.eventKey, t.channel, t.templateKey)]
+  (t) => [
+    uniqueIndex("nr_event_channel_idx").on(t.organizationId, t.eventKey, t.channel, t.templateKey)
+  ]
 )
 
 /** Antrian outbound (diproses worker BullMQ dengan retry). */
@@ -122,7 +141,9 @@ export const outboundMessages = pgTable(
     to: text("to").notNull(),
     templateKey: text("template_key"),
     content: text("content").notNull(),
-    status: text("status", { enum: ["queued", "sending", "sent", "delivered", "failed", "cancelled"] })
+    status: text("status", {
+      enum: ["queued", "sending", "sent", "delivered", "failed", "cancelled"]
+    })
       .default("queued")
       .notNull(),
     attempts: integer("attempts").default(0).notNull(),
@@ -134,7 +155,10 @@ export const outboundMessages = pgTable(
     sentAt: timestamp("sent_at", { withTimezone: true }),
     ...timestamps()
   },
-  (t) => [index("om_status_idx").on(t.status), index("om_related_idx").on(t.relatedType, t.relatedId)]
+  (t) => [
+    index("om_status_idx").on(t.status),
+    index("om_related_idx").on(t.relatedType, t.relatedId)
+  ]
 )
 
 /** Inbox notifikasi dalam aplikasi (realtime via SSE). */

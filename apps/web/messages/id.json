@@ -1,0 +1,19 @@
+{
+  "Home": {
+    "title": "PETORA INDONESIA",
+    "description": "Panel operasional petshop dan klinik hewan",
+    "sectionLabel": "Ringkasan sistem",
+    "statusTitle": "Fondasi aplikasi aktif",
+    "statusDescription": "Konfigurasi operasional awal belum diselesaikan.",
+    "healthCheck": "Periksa kesehatan layanan"
+  },
+  "Locale": {
+    "label": "Bahasa",
+    "indonesian": "Bahasa Indonesia",
+    "english": "English"
+  },
+  "Theme": {
+    "dark": "Mode gelap",
+    "light": "Mode terang"
+  }
+}

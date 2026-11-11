@@ -1,2 +1,8 @@
-source = "./app/**/*.{ts,tsx}"
-include = ["./components/**/*.{ts,tsx}"]
+const config = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+}
+
+export default config

@@ -45,7 +45,10 @@ function hasPermissionEverywhere(actor: Actor, permission: string): boolean {
 
 function hasPermissionInBranch(actor: Actor, permission: string, branchId: string): boolean {
   return actor.grants.some(
-    (g) => (g.scope === "all_branches" || (g.scope === "assigned_branches" && g.branchIds.includes(branchId))) && g.permissions.includes(permission)
+    (g) =>
+      (g.scope === "all_branches" ||
+        (g.scope === "assigned_branches" && g.branchIds.includes(branchId))) &&
+      g.permissions.includes(permission)
   )
 }
 
@@ -65,7 +68,9 @@ export function can(input: CanInput): boolean {
   // Override per pengguna: deny mutlak, grant memberi akses lintas-cabang.
   const overrides = actor.overrides ?? []
   if (overrides.some((o) => o.permission === permission && o.effect === "deny")) return false
-  const grantedByOverride = overrides.some((o) => o.permission === permission && o.effect === "grant")
+  const grantedByOverride = overrides.some(
+    (o) => o.permission === permission && o.effect === "grant"
+  )
   if (grantedByOverride) return true
 
   if (hasPermissionEverywhere(actor, permission)) return true
@@ -74,7 +79,11 @@ export function can(input: CanInput): boolean {
     if (hasPermissionInBranch(actor, permission, resource.branchId)) return true
   }
 
-  if (resource?.ownerId !== undefined && resource.ownerId === actor.userId && hasSelfOnlyPermission(actor, permission)) {
+  if (
+    resource?.ownerId !== undefined &&
+    resource.ownerId === actor.userId &&
+    hasSelfOnlyPermission(actor, permission)
+  ) {
     return true
   }
   // self_only tanpa resource owner diketahui: anggap hanya boleh jika sumber milik sendiri
@@ -104,11 +113,23 @@ export function effectiveLimits(actor: Actor): Required<RoleLimits> {
   const tighten = (a: number | null, b: number | null): number | null =>
     a === null ? b : b === null ? a : Math.min(a, b)
   for (const g of actor.grants) {
-    merged.maxDiscountPercent = tighten(merged.maxDiscountPercent, g.limits?.maxDiscountPercent ?? null)
-    merged.maxDiscountAmount = tighten(merged.maxDiscountAmount, g.limits?.maxDiscountAmount ?? null)
+    merged.maxDiscountPercent = tighten(
+      merged.maxDiscountPercent,
+      g.limits?.maxDiscountPercent ?? null
+    )
+    merged.maxDiscountAmount = tighten(
+      merged.maxDiscountAmount,
+      g.limits?.maxDiscountAmount ?? null
+    )
     merged.maxRefundAmount = tighten(merged.maxRefundAmount, g.limits?.maxRefundAmount ?? null)
-    merged.maxVoidWithoutApproval = tighten(merged.maxVoidWithoutApproval, g.limits?.maxVoidWithoutApproval ?? null)
-    merged.maxCashTransaction = tighten(merged.maxCashTransaction, g.limits?.maxCashTransaction ?? null)
+    merged.maxVoidWithoutApproval = tighten(
+      merged.maxVoidWithoutApproval,
+      g.limits?.maxVoidWithoutApproval ?? null
+    )
+    merged.maxCashTransaction = tighten(
+      merged.maxCashTransaction,
+      g.limits?.maxCashTransaction ?? null
+    )
   }
   return merged
 }
@@ -126,7 +147,13 @@ export function checkAmountLimit(actor: Actor, kind: keyof RoleLimits, amount: n
   if (cap === null) return { ok: true }
   if (amount <= cap) return { ok: true }
   const reason: LimitReason =
-    kind === "maxRefundAmount" ? "refund" : kind === "maxVoidWithoutApproval" ? "void" : kind === "maxCashTransaction" ? "cash" : "amount"
+    kind === "maxRefundAmount"
+      ? "refund"
+      : kind === "maxVoidWithoutApproval"
+        ? "void"
+        : kind === "maxCashTransaction"
+          ? "cash"
+          : "amount"
   return { ok: false, requiresApproval: true, reason }
 }
 

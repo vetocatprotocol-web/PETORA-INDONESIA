@@ -1,0 +1,19 @@
+{
+  "Home": {
+    "title": "PETORA INDONESIA",
+    "description": "Pet shop and veterinary clinic operations",
+    "sectionLabel": "System overview",
+    "statusTitle": "Application foundation is active",
+    "statusDescription": "Initial operational setup has not been completed.",
+    "healthCheck": "Check service health"
+  },
+  "Locale": {
+    "label": "Language",
+    "indonesian": "Bahasa Indonesia",
+    "english": "English"
+  },
+  "Theme": {
+    "dark": "Dark mode",
+    "light": "Light mode"
+  }
+}

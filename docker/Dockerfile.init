@@ -2,6 +2,15 @@
 FROM node:24-slim
 WORKDIR /app
 COPY --link package.json package-lock.json* ./
-RUN npm ci
+COPY --link apps/web/package.json ./apps/web/package.json
+COPY --link apps/worker/package.json ./apps/worker/package.json
+COPY --link packages/auth/package.json ./packages/auth/package.json
+COPY --link packages/core/package.json ./packages/core/package.json
+COPY --link packages/db/package.json ./packages/db/package.json
+COPY --link packages/documents/package.json ./packages/documents/package.json
+COPY --link packages/integrations/package.json ./packages/integrations/package.json
+COPY --link packages/rbac/package.json ./packages/rbac/package.json
+COPY --link packages/ui/package.json ./packages/ui/package.json
+RUN npm ci --workspaces --include-workspace-root
 COPY --link . .
-CMD ["sh", "-c", "tsx packages/db/src/migrate.ts"]
+CMD ["npm", "run", "db:migrate", "--workspace", "@petora/db"]

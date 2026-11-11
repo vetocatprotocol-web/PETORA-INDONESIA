@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-background: #f8faf9;
+  --color-foreground: #172321;
+  --color-border: #d7e1de;
+  --color-muted: #edf2f0;
+  --color-muted-foreground: #53635f;
+  --color-accent: #0f766e;
+  --color-accent-hover: #0d5c57;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-background: #172321;
+  --color-foreground: #f3f7f5;
+  --color-border: #43524e;
+  --color-muted: #24312e;
+  --color-muted-foreground: #b7c5c0;
+  --color-accent: #5dd4c4;
+  --color-accent-hover: #80e0d3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-background: #172321;
+    --color-foreground: #f3f7f5;
+    --color-border: #43524e;
+    --color-muted: #24312e;
+    --color-muted-foreground: #b7c5c0;
+    --color-accent: #5dd4c4;
+    --color-accent-hover: #80e0d3;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-background);
+}

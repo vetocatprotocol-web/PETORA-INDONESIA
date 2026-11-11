@@ -2,7 +2,16 @@
  * Skema Drizzle — domain Data Induk / CRM & Katalog (AGENT.md 13, docs/03-erd.md).
  * Fase 3: pelanggan, hewan, supplier, kategori/merek/satuan, produk & varian, layanan & paket.
  */
-import { integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid, index, date } from "drizzle-orm/pg-core"
+import {
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  index,
+  date
+} from "drizzle-orm/pg-core"
 import { id, timestamps, softDelete, activeFlag, rupiahOrNull, rupiah } from "./helpers"
 import { organization, branches, users } from "./core"
 
@@ -10,7 +19,9 @@ export const customers = pgTable(
   "customers",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     /** Cabang tempat pelanggan pertama terdaftar (untuk scoping; manajer melihat lintas cabang sesuai role). */
     primaryBranchId: uuid("primary_branch_id").references(() => branches.id),
     code: text("code").notNull(),
@@ -37,25 +48,38 @@ export const customerAccounts = pgTable(
   "customer_accounts",
   {
     id: id(),
-    userId: uuid("user_id").notNull().references(() => users.id),
-    customerId: uuid("customer_id").notNull().references(() => customers.id),
-    status: text("status", { enum: ["pending_claim", "claimed", "rejected"] }).default("pending_claim").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    customerId: uuid("customer_id")
+      .notNull()
+      .references(() => customers.id),
+    status: text("status", { enum: ["pending_claim", "claimed", "rejected"] })
+      .default("pending_claim")
+      .notNull(),
     claimedAt: timestamp("claimed_at", { withTimezone: true }),
     ...timestamps()
   },
-  (t) => [uniqueIndex("ca_user_customer_idx").on(t.userId, t.customerId), index("ca_customer_idx").on(t.customerId)]
+  (t) => [
+    uniqueIndex("ca_user_customer_idx").on(t.userId, t.customerId),
+    index("ca_customer_idx").on(t.customerId)
+  ]
 )
 
 export const pets = pgTable(
   "pets",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
     species: text("species", { enum: ["anjing", "kucing", "aves", "exotic", "lainnya"] }).notNull(),
     breed: text("breed"),
-    sex: text("sex", { enum: ["jantan", "betina", "unknown"] }).default("unknown").notNull(),
+    sex: text("sex", { enum: ["jantan", "betina", "unknown"] })
+      .default("unknown")
+      .notNull(),
     birthDate: date("birth_date"),
     color: text("color"),
     weightKg: integer("weight_grams"),
@@ -66,19 +90,32 @@ export const pets = pgTable(
     ...timestamps(),
     ...softDelete()
   },
-  (t) => [uniqueIndex("pets_org_code_idx").on(t.organizationId, t.code), index("pets_name_idx").on(t.name), index("pets_chip_idx").on(t.microchipId)]
+  (t) => [
+    uniqueIndex("pets_org_code_idx").on(t.organizationId, t.code),
+    index("pets_name_idx").on(t.name),
+    index("pets_chip_idx").on(t.microchipId)
+  ]
 )
 
 export const petOwners = pgTable(
   "pet_owners",
   {
-    petId: uuid("pet_id").notNull().references(() => pets.id, { onDelete: "cascade" }),
-    customerId: uuid("customer_id").notNull().references(() => customers.id),
-    relation: text("relation", { enum: ["owner", "co_owner", "emergency"] }).default("owner").notNull(),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id, { onDelete: "cascade" }),
+    customerId: uuid("customer_id")
+      .notNull()
+      .references(() => customers.id),
+    relation: text("relation", { enum: ["owner", "co_owner", "emergency"] })
+      .default("owner")
+      .notNull(),
     isPrimary: text("is_primary").default("true").notNull(),
     ...timestamps()
   },
-  (t) => [uniqueIndex("pet_owners_pk").on(t.petId, t.customerId), index("po_customer_idx").on(t.customerId)]
+  (t) => [
+    uniqueIndex("pet_owners_pk").on(t.petId, t.customerId),
+    index("po_customer_idx").on(t.customerId)
+  ]
 )
 
 /** Riwayat berat untuk kurva pertumbuhan (gram agar tetap integer). */
@@ -86,12 +123,16 @@ export const petWeights = pgTable(
   "pet_weights",
   {
     id: id(),
-    petId: uuid("pet_id").notNull().references(() => pets.id, { onDelete: "cascade" }),
+    petId: uuid("pet_id")
+      .notNull()
+      .references(() => pets.id, { onDelete: "cascade" }),
     weighedAt: timestamp("weighed_at", { withTimezone: true }).defaultNow().notNull(),
     weightGrams: integer("weight_grams").notNull(),
     measuredBy: uuid("measured_by").references(() => users.id),
     visitId: uuid("visit_id"),
-    source: text("source", { enum: ["visit", "boarding", "grooming", "manual", "portal"] }).default("manual").notNull(),
+    source: text("source", { enum: ["visit", "boarding", "grooming", "manual", "portal"] })
+      .default("manual")
+      .notNull(),
     ...timestamps()
   },
   (t) => [index("pw_pet_time_idx").on(t.petId, t.weighedAt)]
@@ -101,7 +142,9 @@ export const suppliers = pgTable(
   "suppliers",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
     contactName: text("contact_name"),
@@ -114,14 +157,19 @@ export const suppliers = pgTable(
     ...timestamps(),
     ...softDelete()
   },
-  (t) => [uniqueIndex("suppliers_org_code_idx").on(t.organizationId, t.code), index("suppliers_name_idx").on(t.name)]
+  (t) => [
+    uniqueIndex("suppliers_org_code_idx").on(t.organizationId, t.code),
+    index("suppliers_name_idx").on(t.name)
+  ]
 )
 
 export const categories = pgTable(
   "categories",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     parentId: uuid("parent_id"),
     name: text("name").notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
@@ -135,7 +183,9 @@ export const brands = pgTable(
   "brands",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     name: text("name").notNull(),
     ...timestamps(),
     ...softDelete()
@@ -147,10 +197,14 @@ export const units = pgTable(
   "units",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     name: text("name").notNull(),
     abbreviation: text("abbreviation").notNull(),
-    kind: text("kind", { enum: ["count", "weight", "volume", "length", "time"] }).default("count").notNull(),
+    kind: text("kind", { enum: ["count", "weight", "volume", "length", "time"] })
+      .default("count")
+      .notNull(),
     ...timestamps(),
     ...softDelete()
   },
@@ -162,8 +216,12 @@ export const unitConversions = pgTable(
   "unit_conversions",
   {
     id: id(),
-    fromUnitId: uuid("from_unit_id").notNull().references(() => units.id),
-    toUnitId: uuid("to_unit_id").notNull().references(() => units.id),
+    fromUnitId: uuid("from_unit_id")
+      .notNull()
+      .references(() => units.id),
+    toUnitId: uuid("to_unit_id")
+      .notNull()
+      .references(() => units.id),
     numerator: integer("numerator").notNull(),
     denominator: integer("denominator").notNull().default(1),
     ...timestamps()
@@ -175,7 +233,9 @@ export const products = pgTable(
   "products",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
     categoryId: uuid("category_id").references(() => categories.id),
@@ -206,7 +266,9 @@ export const productVariants = pgTable(
   "product_variants",
   {
     id: id(),
-    productId: uuid("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
     sku: text("sku").notNull(),
     name: text("name").notNull(),
     sizeLabel: text("size_label"),
@@ -222,7 +284,9 @@ export const productBarcodes = pgTable(
   "product_barcodes",
   {
     id: id(),
-    variantId: uuid("variant_id").notNull().references(() => productVariants.id, { onDelete: "cascade" }),
+    variantId: uuid("variant_id")
+      .notNull()
+      .references(() => productVariants.id, { onDelete: "cascade" }),
     barcode: text("barcode").notNull(),
     ...timestamps()
   },
@@ -234,7 +298,9 @@ export const priceLists = pgTable(
   "price_lists",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     name: text("name").notNull(),
     tier: integer("tier").default(1).notNull(),
     ...timestamps(),
@@ -247,8 +313,12 @@ export const branchPrices = pgTable(
   "branch_prices",
   {
     id: id(),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
-    variantId: uuid("variant_id").notNull().references(() => productVariants.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
+    variantId: uuid("variant_id")
+      .notNull()
+      .references(() => productVariants.id),
     priceListId: uuid("price_list_id").references(() => priceLists.id),
     price: rupiah("price"),
     ...timestamps()
@@ -260,7 +330,9 @@ export const services = pgTable(
   "services",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
     categoryId: uuid("category_id").references(() => categories.id),
@@ -271,14 +343,19 @@ export const services = pgTable(
     ...timestamps(),
     ...softDelete()
   },
-  (t) => [uniqueIndex("services_org_code_idx").on(t.organizationId, t.code), index("services_name_idx").on(t.name)]
+  (t) => [
+    uniqueIndex("services_org_code_idx").on(t.organizationId, t.code),
+    index("services_name_idx").on(t.name)
+  ]
 )
 
 export const servicePackages = pgTable(
   "service_packages",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
     price: rupiah("price"),
@@ -293,7 +370,9 @@ export const servicePackageItems = pgTable(
   "service_package_items",
   {
     id: id(),
-    packageId: uuid("package_id").notNull().references(() => servicePackages.id, { onDelete: "cascade" }),
+    packageId: uuid("package_id")
+      .notNull()
+      .references(() => servicePackages.id, { onDelete: "cascade" }),
     serviceId: uuid("service_id").references(() => services.id),
     productId: uuid("product_id").references(() => products.id),
     quantity: integer("quantity").default(1).notNull(),
@@ -306,10 +385,16 @@ export const resources = pgTable(
   "resources",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     name: text("name").notNull(),
-    kind: text("kind", { enum: ["table_grooming", "mesin_cuci", "dryer", "ruangan", "dokter", "peralatan_lab"] }).notNull(),
+    kind: text("kind", {
+      enum: ["table_grooming", "mesin_cuci", "dryer", "ruangan", "dokter", "peralatan_lab"]
+    }).notNull(),
     capacity: integer("capacity").default(1).notNull(),
     ...timestamps(),
     ...softDelete()
@@ -321,25 +406,36 @@ export const roomsCages = pgTable(
   "rooms_cages",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
-    branchId: uuid("branch_id").notNull().references(() => branches.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
+    branchId: uuid("branch_id")
+      .notNull()
+      .references(() => branches.id),
     code: text("code").notNull(),
     name: text("name").notNull(),
-    kind: text("kind", { enum: ["kandang_kucing", "kandang_anjing", "kamar_inap", "isolasi", "icu"] }).notNull(),
+    kind: text("kind", {
+      enum: ["kandang_kucing", "kandang_anjing", "kamar_inap", "isolasi", "icu"]
+    }).notNull(),
     sizeLabel: text("size_label"),
     dailyRate: rupiahOrNull("daily_rate"),
     isActive: activeFlag(),
     ...timestamps(),
     ...softDelete()
   },
-  (t) => [uniqueIndex("rc_branch_code_idx").on(t.branchId, t.code), index("rc_branch_kind_idx").on(t.branchId, t.kind)]
+  (t) => [
+    uniqueIndex("rc_branch_code_idx").on(t.branchId, t.code),
+    index("rc_branch_kind_idx").on(t.branchId, t.kind)
+  ]
 )
 
 export const taxRates = pgTable(
   "tax_rates",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     name: text("name").notNull(),
     /** Persen × 100 (mis. 11% = 1100) agar integer. */
     rateBps: integer("rate_bps").notNull(),
@@ -354,10 +450,25 @@ export const paymentMethods = pgTable(
   "payment_methods",
   {
     id: id(),
-    organizationId: uuid("organization_id").notNull().references(() => organization.id),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organization.id),
     key: text("key").notNull(),
     name: text("name").notNull(),
-    kind: text("kind", { enum: ["cash", "debit", "credit", "qris", "ewallet", "va", "transfer", "deposit", "voucher", "kredit"] }).notNull(),
+    kind: text("kind", {
+      enum: [
+        "cash",
+        "debit",
+        "credit",
+        "qris",
+        "ewallet",
+        "va",
+        "transfer",
+        "deposit",
+        "voucher",
+        "kredit"
+      ]
+    }).notNull(),
     gatewayAdapter: text("gateway_adapter"),
     sortOrder: integer("sort_order").default(0).notNull(),
     isActive: activeFlag(),

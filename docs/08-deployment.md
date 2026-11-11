@@ -15,14 +15,16 @@
 ## Perilaku Otomatis
 `docker compose up -d` (atau `./scripts/install.sh`) pada instalasi baru harus:
 1. Membuat rahasia (`AUTH_SECRET`, kunci enkripsi master, password DB/Redis) dan menyimpannya di volume `secrets` bila belum ada. Tidak ada langkah manual menyalin kunci.
-2. Menjalankan migrasi database dan seed katalog permission/role bawaan.
+2. Menjalankan migrasi SQL versioned dari `packages/db/drizzle` melalui Drizzle. Jika migrasi gagal, layanan web dan worker tetap menunggu init berhasil.
 3. Menyalakan semua layanan dengan healthcheck dan urutan `depends_on` yang benar.
 4. Mengarahkan ke Setup Wizard saat pertama kali dibuka.
+
+Job `init` berjalan setelah PostgreSQL dan Redis sehat. Layanan `web` dan `worker` baru dimulai setelah job ini selesai dengan sukses.
 
 ## Setup Wizard
 Hanya jalan jika belum terinisialisasi: akun Owner, profil bisnis, cabang pertama, zona waktu/bahasa/pajak, pengecekan domain/HTTPS/port 80-443, uji koneksi DB/Redis, opsi isi data contoh. Setelah selesai, wizard terkunci permanen.
 
-Variabel minimal yang perlu diisi pengguna (mis. `PETORA_DOMAIN`, email untuk sertifikat). Sisnya otomatis; semua variabel terdokumentasi di `.env.example`.
+Variabel minimal yang perlu diisi pengguna adalah `PETORA_DOMAIN` untuk domain publik; nilai default `localhost` dapat dipakai untuk pengujian lokal. Caddy mengelola HTTPS otomatis saat domain publik diarahkan ke server. Sisanya otomatis; semua variabel terdokumentasi di `.env.example`.
 
 ## Upgrade & Backup
 - Image berversi (tag semver); migrasi otomatis saat start.

@@ -23,5 +23,13 @@ export default tseslint.config(
       "no-unused-vars": "error"
     },
     ignores: ["node_modules", "dist", ".next", "build", "drizzle"]
+  },
+  {
+    files: ["apps/web/**/*.{js,jsx,ts,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser
+      }
+    }
   }
 )

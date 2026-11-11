@@ -16,7 +16,13 @@ export interface PermissionDef {
   risk: RiskLevel
 }
 
-function p(key: string, module: string, descriptionId: string, descriptionEn: string, risk: RiskLevel): PermissionDef {
+function p(
+  key: string,
+  module: string,
+  descriptionId: string,
+  descriptionEn: string,
+  risk: RiskLevel
+): PermissionDef {
   return { key, module, descriptionId, descriptionEn, risk }
 }
 
@@ -39,8 +45,20 @@ export const PERMISSION_CATALOG: readonly PermissionDef[] = [
   // Klinik / rekam medis
   p("medical.record.view", "medical", "Lihat rekam medis", "View medical record", "sedang"),
   p("medical.record.edit", "medical", "Edit rekam medis", "Edit medical record", "tinggi"),
-  p("medical.record.view_internal_notes", "medical", "Lihat catatan internal", "View internal notes", "tinggi"),
-  p("medical.record.finalize", "medical", "Kunci rekam medis", "Finalize (lock) medical record", "tinggi"),
+  p(
+    "medical.record.view_internal_notes",
+    "medical",
+    "Lihat catatan internal",
+    "View internal notes",
+    "tinggi"
+  ),
+  p(
+    "medical.record.finalize",
+    "medical",
+    "Kunci rekam medis",
+    "Finalize (lock) medical record",
+    "tinggi"
+  ),
   p("medical.prescription.create", "medical", "Buat resep", "Create prescription", "sedang"),
   p("vaccination.manage", "medical", "Kelola vaksinasi", "Manage vaccinations", "sedang"),
 
@@ -56,7 +74,13 @@ export const PERMISSION_CATALOG: readonly PermissionDef[] = [
   // Keuangan & komisi
   p("finance.report.view", "finance", "Lihat laporan keuangan", "View financial reports", "tinggi"),
   p("finance.journal.post", "finance", "Posting jurnal", "Post journal entries", "tinggi"),
-  p("commission.report.view", "finance", "Lihat laporan komisi", "View commission reports", "sedang"),
+  p(
+    "commission.report.view",
+    "finance",
+    "Lihat laporan komisi",
+    "View commission reports",
+    "sedang"
+  ),
 
   // Platform
   p("integration.config.manage", "platform", "Kelola integrasi", "Manage integrations", "kritis"),
@@ -65,7 +89,9 @@ export const PERMISSION_CATALOG: readonly PermissionDef[] = [
   p("settings.manage", "platform", "Kelola pengaturan sistem", "Manage system settings", "kritis")
 ] as const
 
-const catalogByKeys: Record<string, PermissionDef> = Object.fromEntries(PERMISSION_CATALOG.map((d) => [d.key, d]))
+const catalogByKeys: Record<string, PermissionDef> = Object.fromEntries(
+  PERMISSION_CATALOG.map((d) => [d.key, d])
+)
 
 export function isPermissionKey(key: string): boolean {
   return Object.prototype.hasOwnProperty.call(catalogByKeys, key)

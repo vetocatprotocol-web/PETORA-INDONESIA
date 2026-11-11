@@ -80,7 +80,13 @@ export const BUILTIN_ROLES: readonly BuiltinRoleDef[] = [
     nameId: "Kasir",
     nameEn: "Cashier",
     scope: "assigned_branches",
-    permissions: [...BASE, "pos.sale.create", "pos.payment.receive", "pos.shift.open", "pos.shift.close"],
+    permissions: [
+      ...BASE,
+      "pos.sale.create",
+      "pos.payment.receive",
+      "pos.shift.open",
+      "pos.shift.close"
+    ],
     locked: false
   },
   {
@@ -88,7 +94,14 @@ export const BUILTIN_ROLES: readonly BuiltinRoleDef[] = [
     nameId: "Resepsionis",
     nameEn: "Receptionist",
     scope: "assigned_branches",
-    permissions: [...BASE, "appointment.manage", "customer.manage", "pos.sale.create", "pos.payment.receive", "boarding.manage"],
+    permissions: [
+      ...BASE,
+      "appointment.manage",
+      "customer.manage",
+      "pos.sale.create",
+      "pos.payment.receive",
+      "boarding.manage"
+    ],
     locked: false
   },
   {
@@ -138,7 +151,13 @@ export const BUILTIN_ROLES: readonly BuiltinRoleDef[] = [
     nameId: "Admin Gudang",
     nameEn: "Warehouse Admin",
     scope: "assigned_branches",
-    permissions: [...BASE, "inventory.stock.adjust", "inventory.purchase.order", "inventory.goods.receipt", "product.manage"],
+    permissions: [
+      ...BASE,
+      "inventory.stock.adjust",
+      "inventory.purchase.order",
+      "inventory.goods.receipt",
+      "product.manage"
+    ],
     locked: false
   },
   {
@@ -155,7 +174,9 @@ export function getBuiltinRole(key: string): BuiltinRoleDef | undefined {
   return builtinRoleMap[key]
 }
 
-const builtinRoleMap: Record<string, BuiltinRoleDef> = Object.fromEntries(BUILTIN_ROLES.map((r) => [r.key, r]))
+const builtinRoleMap: Record<string, BuiltinRoleDef> = Object.fromEntries(
+  BUILTIN_ROLES.map((r) => [r.key, r])
+)
 
 /** Resolve permission sebuah role bawaan (termasuk wildcard `"*"`). */
 export function resolveBuiltinPermissions(roleKey: string): string[] {

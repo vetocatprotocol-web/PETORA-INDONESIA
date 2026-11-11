@@ -24,7 +24,8 @@ Checklist per fase dan per modul. Tandai `[x]` saat gerbang keluar fase terpenuh
 ## Fase 1 — Fondasi Teknis
 - [ ] Monorepo, tooling (lint, format, typecheck, test), CI
 - [ ] Dockerfile, compose dasar (web, worker, postgres, redis, caddy), healthcheck
-- [ ] Paket db (Drizzle, migrasi awal), ui (token desain, komponen dasar), i18n, layout dasar, tema
+- [x] Paket db (Drizzle, migrasi SQL awal)
+- [ ] Paket ui (token desain, komponen dasar), i18n, layout dasar, tema
 **Gerbang keluar Fase 1:** `docker compose up` menampilkan halaman dasar; CI hijau; migrasi berjalan otomatis.
 
 ## Fase 2 — Platform Inti
