@@ -5,13 +5,13 @@ WORKDIR /app
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm install && ls node_modules/.bin/next 2>/dev/null || echo "NEXT_BIN_NOT_FOUND"
+RUN npm ci
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN ls node_modules/.bin/next 2>/dev/null || echo "NEXT_BIN_NOT_FOUND_IN_BUILDER"; npm run build
+RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
