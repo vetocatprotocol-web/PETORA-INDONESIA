@@ -1,0 +1,19 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "build/**"]
+    },
+    "lint": {},
+    "typecheck": {},
+    "test": {},
+    "test:integration": {},
+    "db:generate": {},
+    "db:migrate": {},
+    "db:seed": {},
+    "dev": {
+      "cache": false
+    }
+  }
+}

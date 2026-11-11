@@ -1,0 +1,7 @@
+# syntax=docker/dockerfile:1
+FROM node:24-slim
+WORKDIR /app
+COPY --link package.json package-lock.json* ./
+RUN npm ci
+COPY --link . .
+CMD ["sh", "-c", "tsx packages/db/src/migrate.ts"]

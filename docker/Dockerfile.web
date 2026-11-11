@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1
+FROM node:24-slim AS base
+WORKDIR /app
+
+FROM base AS deps
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm install && ls node_modules/.bin/next 2>/dev/null || echo "NEXT_BIN_NOT_FOUND"
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN ls node_modules/.bin/next 2>/dev/null || echo "NEXT_BIN_NOT_FOUND_IN_BUILDER"; npm run build
+
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN groupadd --system --gid 1001 nodejs 2>/dev/null || true; useradd --system --uid 1001 --gid nodejs nextjs 2>/dev/null || true
+COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+USER nextjs
+EXPOSE 3000
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
+CMD ["node", "apps/web/server.js"]

@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "incremental": true,
+    "jsx": "preserve",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@petora/db/*": ["./packages/db/src/*"],
+      "@petora/core/*": ["./packages/core/src/*"],
+      "@petora/auth/*": ["./packages/auth/src/*"],
+      "@petora/rbac/*": ["./packages/rbac/src/*"],
+      "@petora/integrations/*": ["./packages/integrations/src/*"],
+      "@petora/documents/*": ["./packages/documents/src/*"],
+      "@petora/ui/*": ["./packages/ui/src/*"],
+      "@petora/config/*": ["./packages/config/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next", "build"]
+}

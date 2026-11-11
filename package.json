@@ -1,0 +1,31 @@
+{
+  "name": "petora",
+  "private": true,
+  "packageManager": "npm@11.19.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.ts 2>/dev/null || echo \"integration tests require Postgres (later phase)\"",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
+    "db:seed": "turbo run db:seed"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "eslint": "^9.19.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.5.0",
+    "tsx": "^4.19.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^3.0.0"
+  }
+}

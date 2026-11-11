@@ -1,0 +1,22 @@
+{
+  "name": "petora-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@petora/db": "*",
+    "@petora/core": "*",
+    "bullmq": "^5.30.0",
+    "ioredis": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "vitest": "^3.0.0"
+  }
+}
