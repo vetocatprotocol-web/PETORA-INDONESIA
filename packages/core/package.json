@@ -9,8 +9,10 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "@petora/auth": "*",
     "@petora/db": "*",
-    "@petora/rbac": "*"
+    "@petora/rbac": "*",
+    "drizzle-orm": "^0.40.0"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

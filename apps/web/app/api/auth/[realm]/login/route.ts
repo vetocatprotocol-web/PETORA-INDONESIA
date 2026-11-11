@@ -1,4 +1,5 @@
 import { authenticateWithPassword, createSession, verifyUserTotp } from "@petora/auth"
+import { auditAuthEvent } from "@petora/core"
 import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import {
@@ -54,7 +55,16 @@ export async function POST(request: NextRequest, context: RouteContext) {
       identifier: body.data.identifier,
       password: body.data.password
     })
-    if (!user) return NextResponse.json({ error: "invalid_credentials" }, { status: 401 })
+    if (!user) {
+      await auditAuthEvent(auth.db, {
+        actorId: null,
+        action: "auth.login.failed",
+        entityType: "user",
+        meta: { realm, reason: "invalid_credentials" },
+        ip
+      }).catch(() => undefined)
+      return NextResponse.json({ error: "invalid_credentials" }, { status: 401 })
+    }
 
     if (user.twoFactorEnabled) {
       stage = "totp_rate_limit"
@@ -66,15 +76,36 @@ export async function POST(request: NextRequest, context: RouteContext) {
         )
       }
 
-      if (!body.data.totpCode)
+      if (!body.data.totpCode) {
+        await auditAuthEvent(auth.db, {
+          actorId: user.id,
+          userId: user.id,
+          action: "auth.login.failed",
+          entityType: "user",
+          entityId: user.id,
+          meta: { realm, reason: "totp_required" },
+          ip
+        }).catch(() => undefined)
         return NextResponse.json({ error: "invalid_credentials" }, { status: 401 })
+      }
       stage = "totp_verification"
       const validCode = await verifyUserTotp(
         auth.db,
         { userId: user.id, realm, token: body.data.totpCode },
         getEncryptionMasterKey()
       )
-      if (!validCode) return NextResponse.json({ error: "invalid_credentials" }, { status: 401 })
+      if (!validCode) {
+        await auditAuthEvent(auth.db, {
+          actorId: user.id,
+          userId: user.id,
+          action: "auth.login.failed",
+          entityType: "user",
+          entityId: user.id,
+          meta: { realm, reason: "totp_invalid" },
+          ip
+        }).catch(() => undefined)
+        return NextResponse.json({ error: "invalid_credentials" }, { status: 401 })
+      }
       await auth.totpLimiter.resetIdentifier(attempt)
     }
 
@@ -88,6 +119,16 @@ export async function POST(request: NextRequest, context: RouteContext) {
       userAgent: request.headers.get("user-agent")?.slice(0, 512)
     })
     await auth.loginLimiter.resetIdentifier(attempt)
+
+    await auditAuthEvent(auth.db, {
+      actorId: user.id,
+      userId: user.id,
+      action: "auth.login.succeeded",
+      entityType: "user",
+      entityId: user.id,
+      meta: { realm, twoFactor: user.twoFactorEnabled },
+      ip
+    }).catch(() => undefined)
 
     const response = NextResponse.json({
       user: {

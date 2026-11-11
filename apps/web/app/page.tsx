@@ -1,8 +1,26 @@
 import { getTranslations } from "next-intl/server"
+import { redirect } from "next/navigation"
+import { createDb } from "@petora/db"
+import { getSetupStatus } from "@petora/core"
 import { LocalePicker } from "./locale-picker"
 import { ThemeToggle } from "./theme-toggle"
 
+export const dynamic = "force-dynamic"
+
 export default async function Page() {
+  const databaseUrl = process.env.DATABASE_URL
+  if (databaseUrl) {
+    const db = createDb(databaseUrl)
+    try {
+      const status = await getSetupStatus(db)
+      if (!status.initialized) redirect("/setup")
+    } catch {
+      // If DB unavailable, fall through to basic page
+    } finally {
+      await (db as unknown as { $client: { end: () => Promise<void> } }).$client.end()
+    }
+  }
+
   const t = await getTranslations("Home")
 
   return (

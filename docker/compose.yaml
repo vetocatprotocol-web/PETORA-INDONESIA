@@ -29,8 +29,8 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://petora:petora@postgres:5432/petora
       - REDIS_URL=redis://redis:6379
-      - AUTH_SECRET=${AUTH_SECRET}
-      - ENCRYPTION_MASTER_KEY=${ENCRYPTION_MASTER_KEY}
+      - AUTH_SECRET=${AUTH_SECRET:-}
+      - ENCRYPTION_MASTER_KEY=${ENCRYPTION_MASTER_KEY:-}
       - AUTH_LOGIN_IDENTIFIER_ATTEMPTS=${AUTH_LOGIN_IDENTIFIER_ATTEMPTS:-5}
       - AUTH_LOGIN_IDENTIFIER_WINDOW_SECONDS=${AUTH_LOGIN_IDENTIFIER_WINDOW_SECONDS:-900}
       - AUTH_LOGIN_IDENTIFIER_BLOCK_SECONDS=${AUTH_LOGIN_IDENTIFIER_BLOCK_SECONDS:-900}
@@ -127,6 +127,8 @@ services:
       - DATABASE_URL=postgresql://petora:petora@postgres:5432/petora
       - REDIS_URL=redis://redis:6379
       - PETORA_SECRETS_DIR=/run/secrets
+      - AUTH_SECRET=${AUTH_SECRET:-}
+      - ENCRYPTION_MASTER_KEY=${ENCRYPTION_MASTER_KEY:-}
     volumes:
       - petora_secrets:/run/secrets
     depends_on:

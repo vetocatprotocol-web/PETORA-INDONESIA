@@ -1,6 +1,13 @@
 import { revokeSession } from "@petora/auth"
+import { auditAuthEvent } from "@petora/core"
 import { NextRequest, NextResponse } from "next/server"
-import { hasSameOrigin, parseAuthRealm, sessionCookieName } from "../../../../../lib/auth-api"
+import {
+  getClientIp,
+  hasSameOrigin,
+  parseAuthRealm,
+  resolveRequestSession,
+  sessionCookieName
+} from "../../../../../lib/auth-api"
 import { getAuthRuntime } from "../../../../../lib/auth-runtime"
 
 export const runtime = "nodejs"
@@ -14,21 +21,33 @@ export async function POST(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: "invalid_origin" }, { status: 403 })
 
   try {
-    const cookieName = sessionCookieName(realm)
-    const token = request.cookies.get(cookieName)?.value
-    if (token) await revokeSession(getAuthRuntime().db, token)
-
-    const response = NextResponse.json({ ok: true })
-    response.cookies.set(cookieName, "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0
-    })
-    response.headers.set("Cache-Control", "no-store")
-    return response
+    const auth = getAuthRuntime()
+    const token = request.cookies.get(sessionCookieName(realm))?.value
+    const session = token ? await resolveRequestSession(request, realm) : null
+    if (token) await revokeSession(auth.db, token)
+    if (session) {
+      await auditAuthEvent(auth.db, {
+        actorId: session.id,
+        userId: session.id,
+        action: "auth.logout",
+        entityType: "user",
+        entityId: session.id,
+        meta: { realm },
+        ip: getClientIp(request)
+      }).catch(() => undefined)
+    }
   } catch {
-    return NextResponse.json({ error: "authentication_unavailable" }, { status: 503 })
+    // Logout is best-effort; client state is cleared regardless.
   }
+
+  const response = NextResponse.json({ ok: true })
+  response.headers.set("Cache-Control", "no-store")
+  response.cookies.set(sessionCookieName(realm), "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0
+  })
+  return response
 }

@@ -20,7 +20,7 @@ export default tseslint.config(
     },
     rules: {
       "no-console": "warn",
-      "no-unused-vars": "error"
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }]
     },
     ignores: ["node_modules", "dist", ".next", "build", "drizzle"]
   },

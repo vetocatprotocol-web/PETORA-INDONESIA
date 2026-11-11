@@ -3,7 +3,9 @@ import { resolve } from "node:path"
 import { drizzle } from "drizzle-orm/node-postgres"
 import { migrate } from "drizzle-orm/node-postgres/migrator"
 import { Pool } from "pg"
+import * as schema from "./schema"
 import { ensureSecret } from "./secrets"
+import { seedCatalog } from "./seed"
 
 async function main() {
   const secretDirectory = process.env.PETORA_SECRETS_DIR ?? "/run/secrets"
@@ -28,9 +30,13 @@ async function main() {
   if (!databaseUrl) throw new Error("DATABASE_URL is required")
 
   const pool = new Pool({ connectionString: databaseUrl })
+  const db = drizzle(pool, { schema })
   try {
-    await migrate(drizzle(pool), { migrationsFolder: resolve("drizzle") })
-    console.log("Application secrets ensured and database migrations applied.")
+    await migrate(db, { migrationsFolder: resolve("drizzle") })
+    const result = await seedCatalog(db)
+    console.log(
+      `Init complete: secrets ensured, migrations applied, permissions=${result.permissionsUpserted}, systemRolesSynced=${result.systemRolesSynced}`
+    )
   } finally {
     await pool.end()
   }

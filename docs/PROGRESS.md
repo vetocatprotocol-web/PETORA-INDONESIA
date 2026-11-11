@@ -34,15 +34,38 @@ Checklist per fase dan per modul. Tandai `[x]` saat gerbang keluar fase terpenuh
 	- [x] Sesi opaque tersimpan sebagai hash, realm-scoped, dengan expiry dan revocation
 	- [x] Redis rate limit per identitas dan IP dengan key tersamarkan dan reset identitas saat sukses
 	- [x] Enrollment TOTP terenkripsi, login API/cookie kedua realm, enforcement TOTP dan proteksi replay
-	- [ ] Integrasi UI enrollment, rate-limit operational tuning, dan audit event autentikasi
+	- [x] Audit event autentikasi dasar (login sukses/gagal, logout) via `audit_logs`
+	- [x] UI enrollment 2FA dasar (`/admin/security`)
+	- [ ] Rate-limit operational tuning lanjutan
 - [ ] RBAC penuh: katalog permission, role kustom, penugasan per cabang, batas numerik, approval, UI matriks, "lihat sebagai"
+	- [x] Evaluator `can()` + batas numerik/branch scoping (library) dan loader aktor dari DB (`@petora/core/rbac`)
+	- [x] API daftar/buat/update/klon role (`user.manage`) dengan katalog permission; Owner terkunci
+	- [x] UI dasar buat role kustom, editor permission per role/modul, dan klon role (`/admin/roles`)
+	- [x] API & UI penugasan user↔role↔cabang: daftar, tambah, hapus penugasan (`/api/admin/users`, `/api/admin/users/assignments`)
+	- [ ] UI matriks banding/simulasi "lihat sebagai", approval flow enforcement, pembuatan akun pengguna lengkap
 - [ ] Multi-cabang, pengaturan, branding + atribusi terkunci, penomoran dokumen, feature flags, audit log
+	- [x] Helper core: audit log, settings/feature-flags, penomoran dokumen atomik
+	- [x] API & UI dasar cabang (`settings.manage`), feature flags dan audit log viewer
+	- [ ] Pengaturan/branding UI (atribusi PETORA terkunci), UI penomoran dokumen, hardening scoping cabang end-to-end
 - [ ] Kerangka integrasi: registry adapter, form konfigurasi dinamis, enkripsi kredensial, uji koneksi, webhook ingest + idempotensi
+	- [x] Registry adapter + skema field, enkripsi kredensial AES-256-GCM, CRUD koneksi terenkripsi (API, permission-guarded)
+	- [x] UI integrasi: render field config/kredensial per adapter, aktif/nonaktif, hapus koneksi
+	- [x] Uji koneksi berbasis validasi kelengkapan field wajib (API `.../test` + UI, simpan status tes)
+	- [x] Ingest webhook generik idempoten dasar (`/api/webhooks/:provider` → `webhook_events`, resolusi koneksi/hint)
+	- [x] Routing integrasi dasar per purpose/branch (`integration_routes`: helper core + API `/api/admin/integrations/routes`, UI di `/admin/integrations`)
+	- [ ] Tes koneksi live ke provider, verifikasi signature & handler bisnis webhook per provider
 - [ ] Adapter WhatsApp (Cloud API + gateway) dan Resend, mesin notifikasi + antrian worker + template
+	- [x] Adapter kirim pesan dasar (Resend, WhatsApp Cloud, WhatsApp Gateway) dan endpoint/UI "Kirim uji" (`/api/admin/integrations/:id/send-test`)
+	- [x] Worker memproses `outbound_messages` terjadwal/queued (poll + job `outbound.send/poll`, retry dasar via status/attempts)
+	- [x] Mesin notifikasi dasar: helper render template + dispatch event→rule→template→outbound/inbox (`packages/core/notifications`), CRUD API+UI template & aturan (`/admin/notification-templates`, `/admin/notification-rules`)
+	- [ ] Render variabel lanjutan/pemilihan tujuan otomatis per audience, retry/backoff penuh & status delivery dari webhook, quiet hours/opt-out, template WA Cloud approval sync
 - [ ] Storage file, mesin dokumen/PDF
 - [ ] Setup Wizard dan seed katalog permission di Docker
 	- [x] Pembuatan AUTH_SECRET dan ENCRYPTION_MASTER_KEY persisten saat init
 	- [x] Migrasi otomatis sebelum web/worker dimulai
+	- [x] Seed katalog permission (idempotent) saat init dan seed role bawaan per organisasi saat setup
+	- [x] Setup Wizard dasar: deteksi status, `/setup`, `/api/setup/status|initialize` (org + cabang pertama + owner + sesi)
+	- [ ] Penyempurnaan wizard (cek domain/HTTPS/port, uji DB/Redis, opsi data contoh, penguncian permanen eksplisit & hardening)
 **Gerbang keluar Fase 2:** instalasi bersih → wizard → owner membuat role kustom, cabang, mengonfigurasi WhatsApp dan email dari UI, mengirim pesan uji; test RBAC dan scoping cabang hijau.
 
 ## Fase 3 — Data Induk

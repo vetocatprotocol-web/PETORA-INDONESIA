@@ -7,4 +7,7 @@ export function createDb(databaseUrl: string) {
   return drizzle(pool, { schema })
 }
 
+export type Database = ReturnType<typeof createDb>
+
 export { schema }
+export { seedCatalog, seedBuiltinRolesForOrganization } from "./seed"

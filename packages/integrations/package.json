@@ -8,6 +8,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src"
   },
+  "dependencies": {
+    "@petora/db": "*",
+    "drizzle-orm": "^0.40.0"
+  },
   "devDependencies": {
     "typescript": "^5.7.0",
     "vitest": "^3.0.0",
