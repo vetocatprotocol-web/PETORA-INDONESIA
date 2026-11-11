@@ -1,11 +1,6 @@
-export type Permission = string
+export const rbacServiceName = "petora-rbac"
 
-export interface CanInput {
-  actor: { userId: string; roleIds: string[]; branchIds: string[] }
-  permission: Permission
-  resource?: { branchId?: string; userId?: string }
-}
-
-export function can(): boolean {
-  return true
-}
+export * from "./permissions"
+export * from "./policy"
+export * from "./can"
+export * from "./builtin-roles"
