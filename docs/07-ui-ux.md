@@ -3,6 +3,8 @@
 ## Prinsip Desain
 Profesional, hangat, cepat. Tema hewan peliharaan namun dewasa: satu warna aksen yang dapat diubah owner, tipografi yang jelas, ilustrasi/ikon ramah untuk state kosong, tidak kekanak-kanakan.
 
+Fondasi Fase 1 menyediakan halaman status responsif, pilihan bahasa Indonesia/Inggris, tema terang/gelap mengikuti preferensi sistem, token warna semantik, dan komponen Button dari `packages/ui`.
+
 - Tema: terang/gelap/otomatis, kepadatan tampilan (nyaman/ringkas), warna aksen dari branding.
 - Navigasi: sidebar yang dapat dilipat, command palette (Ctrl/Cmd+K), breadcrumb, pergantian cabang yang menonjol, pencarian global.
 - Interaksi: animasi halus dan bermakna, skeleton loader, optimistic update, toast, konfirmasi aksi berbahaya, undo bila mungkin.

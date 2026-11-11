@@ -1,5 +1,7 @@
 # 08 — Deployment
 
+`compose.yaml` di root adalah entrypoint standar dan menyertakan definisi layanan di `docker/compose.yaml`.
+
 ## Layanan (docker compose)
 | Layanan | Fungsi |
 |---|---|
@@ -8,7 +10,7 @@
 | worker | BullMQ workers dan scheduler |
 | postgres | Database (volume persisten) |
 | redis | Queue/cache |
-| init | Job satu kali: buat rahasia, jalankan migrasi, seed katalog permission |
+| init | Job satu kali: menjalankan migrasi SQL versioned; secret generation dan seed katalog masuk Fase 2 |
 | minio | Opsional (profile) untuk S3-compatible storage |
 | backup | Backup terjadwal DB + file + kunci |
 
@@ -20,6 +22,8 @@
 4. Mengarahkan ke Setup Wizard saat pertama kali dibuka.
 
 Job `init` berjalan setelah PostgreSQL dan Redis sehat. Layanan `web` dan `worker` baru dimulai setelah job ini selesai dengan sukses.
+
+Fondasi Fase 1 sudah menjalankan migrasi otomatis, reverse proxy Caddy, healthcheck, dan worker BullMQ untuk pemeriksaan konektivitas DB/Redis. Pembuatan rahasia otomatis, seed permission, dan Setup Wizard adalah pekerjaan Fase 2.
 
 ## Setup Wizard
 Hanya jalan jika belum terinisialisasi: akun Owner, profil bisnis, cabang pertama, zona waktu/bahasa/pajak, pengecekan domain/HTTPS/port 80-443, uji koneksi DB/Redis, opsi isi data contoh. Setelah selesai, wizard terkunci permanen.

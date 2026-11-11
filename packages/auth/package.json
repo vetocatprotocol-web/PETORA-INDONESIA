@@ -9,7 +9,11 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@petora/db": "*"
+    "@petora/db": "*",
+    "argon2": "^0.45.2",
+    "drizzle-orm": "^0.40.1",
+    "ioredis": "^5.11.1",
+    "rate-limiter-flexible": "^11.4.1"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

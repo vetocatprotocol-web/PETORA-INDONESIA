@@ -22,14 +22,18 @@ Checklist per fase dan per modul. Tandai `[x]` saat gerbang keluar fase terpenuh
 **Gerbang keluar Fase 0:** dokumen konsisten, setiap modul Bagian 8 punya kebutuhan, permission, entitas data. LULUS.
 
 ## Fase 1 — Fondasi Teknis
-- [ ] Monorepo, tooling (lint, format, typecheck, test), CI
-- [ ] Dockerfile, compose dasar (web, worker, postgres, redis, caddy), healthcheck
+- [x] Monorepo, tooling (lint, format, typecheck, test), CI
+- [x] Dockerfile, compose dasar (web, worker, postgres, redis, caddy), healthcheck
 - [x] Paket db (Drizzle, migrasi SQL awal)
-- [ ] Paket ui (token desain, komponen dasar), i18n, layout dasar, tema
-**Gerbang keluar Fase 1:** `docker compose up` menampilkan halaman dasar; CI hijau; migrasi berjalan otomatis.
+- [x] Paket ui (token desain, komponen dasar), i18n, layout dasar, tema
+**Gerbang keluar Fase 1:** `docker compose up` menampilkan halaman dasar; lint, format, typecheck, unit/integration test, build, dan smoke test Docker lulus. LULUS.
 
 ## Fase 2 — Platform Inti
 - [ ] Autentikasi dua realm, sesi, 2FA, rate limit
+	- [x] Hash/verifikasi password Argon2id dan credential verification per realm
+	- [x] Sesi opaque tersimpan sebagai hash, realm-scoped, dengan expiry dan revocation
+	- [x] Redis rate limit per identitas dan IP dengan key tersamarkan dan reset identitas saat sukses
+	- [ ] Login API/cookie untuk kedua realm dan TOTP 2FA
 - [ ] RBAC penuh: katalog permission, role kustom, penugasan per cabang, batas numerik, approval, UI matriks, "lihat sebagai"
 - [ ] Multi-cabang, pengaturan, branding + atribusi terkunci, penomoran dokumen, feature flags, audit log
 - [ ] Kerangka integrasi: registry adapter, form konfigurasi dinamis, enkripsi kredensial, uji koneksi, webhook ingest + idempotensi
